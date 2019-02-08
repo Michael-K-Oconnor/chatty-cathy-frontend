@@ -1,0 +1,16 @@
+node_modules
+dist
+
+Dockerfile*
+docker-compose*
+.dockerignore
+
+.git
+.gitignore
+.env*
+.eslint*
+.travis.yml
+.DS_Store
+*.yml
+Makefile
+README.md
