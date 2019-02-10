@@ -16,7 +16,7 @@ class ChatroomSelect extends React.Component {
   };
 
   getRooms = () => {
-    axios.get(`${window.location.origin}/api/chatrooms`).then(result => {
+    axios.get(`${window.location.origin}/api/messages/chatrooms`).then(result => {
       this.setState({
         rooms: result.data
       });
@@ -27,7 +27,7 @@ class ChatroomSelect extends React.Component {
     const postBody = {
       roomname
     };
-    axios.post(`${window.location.origin}/api/chatrooms`, postBody).then(() => {
+    axios.post(`${window.location.origin}/api/messages/chatrooms`, postBody).then(() => {
       this.getRooms();
     });
   };

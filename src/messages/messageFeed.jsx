@@ -11,7 +11,8 @@ class MessageFeed extends React.Component {
     this.state = {
       messages: []
     };
-    this.socket = io(`${window.location.origin}/messages`, {
+    this.socket = io({
+      path: '/socket/messages/socket.io',
       reconnect: true
     });
     this.socket.on('newMessageForClient', msg => {
@@ -35,7 +36,7 @@ class MessageFeed extends React.Component {
   getMessages = () => {
     const { roomId } = this.props;
     axios
-      .get(`${window.location.origin}/api/messages`, {
+      .get(`${window.location.origin}/api/messages/messages`, {
         params: { roomId }
       })
       .then(result => {

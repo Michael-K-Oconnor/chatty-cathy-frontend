@@ -15,7 +15,7 @@ class UserProfile extends React.Component {
 
   getUserInfo = () => {
     const { userId } = this.props;
-    axios.get(`${window.location.origin}/api/users/${userId}`).then(result => {
+    axios.get(`${window.location.origin}/api/messages/users/${userId}`).then(result => {
       this.setState(result.data[0]);
     });
   };
