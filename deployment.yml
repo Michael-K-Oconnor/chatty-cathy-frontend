@@ -1,0 +1,70 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-service
+  labels:
+    app: chatty-cathy
+    resource: frontend-service
+spec:
+  selector:
+    resource: frontend-deployment
+  ports:
+    - protocol: 'TCP'
+      # Port accessible inside cluster
+      port: 8080
+      # Port to forward to inside the pod
+      targetPort: 8080
+      # Port accessible outside cluster
+      nodePort: 30003
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: chatty-cathy
+    resource: frontend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      resource: frontend-pod
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 76%
+  template:
+    metadata:
+      name: frontend-pod
+      labels:
+        app: chatty-cathy
+        resource: frontend-pod
+    spec:
+      containers:
+        - name: frontend-container
+          image: michaelkoconnor/chatty-cathy-frontend
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: '200Mi'
+            requests:
+              memory: '100Mi'
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              initialDelaySeconds: 10
+              periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              successThreshold: 1
