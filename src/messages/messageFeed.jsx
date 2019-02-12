@@ -11,7 +11,7 @@ class MessageFeed extends React.Component {
     this.state = {
       messages: []
     };
-    this.socket = io({
+    this.socket = io('/messages', {
       path: '/socket/messages/socket.io',
       reconnect: true
     });
@@ -41,6 +41,7 @@ class MessageFeed extends React.Component {
       })
       .then(result => {
         this.setState({ messages: result.data });
+        this.socket.emit('joinChatroomChannel', roomId);
       });
   };
 

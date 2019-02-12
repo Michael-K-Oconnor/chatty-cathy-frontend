@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import io from 'socket.io-client';
 import ChatroomInput from './chatroomInput';
 
 class ChatroomSelect extends React.Component {
@@ -9,6 +10,16 @@ class ChatroomSelect extends React.Component {
     this.state = {
       rooms: []
     };
+    this.socket = io('/chatrooms', {
+      path: '/socket/messages/socket.io',
+      reconnect: true
+    });
+    this.socket.on('newChatroomForClient', room => {
+      const { rooms } = this.state;
+      this.setState({
+        rooms: rooms.concat([room])
+      });
+    });
   }
 
   componentDidMount = () => {
@@ -17,19 +28,12 @@ class ChatroomSelect extends React.Component {
 
   getRooms = () => {
     axios.get(`${window.location.origin}/api/messages/chatrooms`).then(result => {
-      this.setState({
-        rooms: result.data
-      });
+      this.setState({ rooms: result.data });
     });
   };
 
   submitRoom = roomname => {
-    const postBody = {
-      roomname
-    };
-    axios.post(`${window.location.origin}/api/messages/chatrooms`, postBody).then(() => {
-      this.getRooms();
-    });
+    this.socket.emit('chatroomSubmitted', { roomname });
   };
 
   render() {
